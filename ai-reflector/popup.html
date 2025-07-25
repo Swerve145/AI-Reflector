@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    :root {
+      --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --success-color: #10b981;
+      --warning-color: #f59e0b;
+      --glass-bg: rgba(255, 255, 255, 0.85);
+      --glass-border: rgba(255, 255, 255, 0.2);
+      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      width: 360px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f9fafb;
+      color: #1f2937;
+    }
+    
+    .popup-header {
+      background: var(--primary-gradient);
+      padding: 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .popup-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+      animation: shimmer 3s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+      50% { transform: translate(-30%, -30%) scale(1.1); opacity: 1; }
+    }
+    
+    .header-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo-large {
+      font-size: 48px;
+      margin-bottom: 12px;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    .popup-header h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 4px;
+      letter-spacing: -0.5px;
+    }
+    
+    .popup-header p {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 400;
+    }
+
+    .streak-banner {
+      background: rgba(255, 255, 255, 0.2);
+      margin: 12px -24px -24px;
+      padding: 12px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .streak-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .streak-label {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.9);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      padding: 20px;
+    }
+    
+    .stat-card {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+      text-align: center;
+      border: 1px solid #e5e7eb;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-icon {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .quality-score {
+      padding: 20px;
+      background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+    }
+
+    .quality-bar {
+      width: 100%;
+      height: 8px;
+      background: #e5e7eb;
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 12px 0;
+    }
+
+    .quality-fill {
+      height: 100%;
+      background: var(--primary-gradient);
+      border-radius: 4px;
+      transition: width 0.6s ease;
+    }
+
+    .quality-text {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+    }
+
+    .quality-label {
+      color: #6b7280;
+    }
+
+    .quality-percentage {
+      font-weight: 600;
+      color: #4f46e5;
+    }
+    
+    .actions {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    button {
+      border: none;
+      padding: 14px 20px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .primary-btn {
+      background: var(--primary-gradient);
+      color: white;
+    }
+
+    .primary-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+    }
+
+    .secondary-btn {
+      background: white;
+      color: #4f46e5;
+      border: 2px solid #e5e7eb;
+    }
+
+    .secondary-btn:hover {
+      background: #f9fafb;
+      border-color: #4f46e5;
+    }
+
+    .danger-btn {
+      background: white;
+      color: #ef4444;
+      border: 2px solid #fee2e2;
+    }
+
+    .danger-btn:hover {
+      background: #fef2f2;
+      border-color: #ef4444;
+    }
+
+    .btn-icon {
+      font-size: 16px;
+    }
+    
+    .status {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 16px;
+      font-size: 13px;
+      font-weight: 600;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(1.2); }
+    }
+    
+    .status.active .status-dot {
+      background: var(--success-color);
+    }
+    
+    .status.inactive .status-dot {
+      background: #ef4444;
+      animation: none;
+    }
+
+    /* Dark mode support */
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: #111827;
+        color: #f9fafb;
+      }
+
+      .stat-card {
+        background: #1f2937;
+        border-color: #374151;
+      }
+
+      .stat-value {
+        color: #f9fafb;
+      }
+
+      .quality-score {
+        background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+      }
+
+      .quality-bar {
+        background: #374151;
+      }
+
+      .secondary-btn, .danger-btn {
+        background: #1f2937;
+        border-color: #374151;
+      }
+
+      .secondary-btn:hover {
+        background: #374151;
+      }
+
+      .danger-btn:hover {
+        background: #374151;
+      }
+
+      .status {
+        border-color: #374151;
+      }
+    }
+
+    /* Loading state */
+    .loading {
+      display: flex;
+      justify-content: center;
+      padding: 40px;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid #e5e7eb;
+      border-top-color: #4f46e5;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="popup-header">
+    <div class="header-content">
+      <div class="logo-large">🧠</div>
+      <h2>AI Reflection Helper</h2>
+      <p>Enhancing learning through reflection</p>
+    </div>
+    <div class="streak-banner">
+      <div class="streak-value">🔥 <span id="streak-count">0</span></div>
+      <div class="streak-label">Day Streak</div>
+    </div>
+  </div>
+
+  <div id="loading" class="loading" style="display: none;">
+    <div class="spinner"></div>
+  </div>
+
+  <div id="content">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">💬</div>
+        <div class="stat-value" id="query-count">0</div>
+        <div class="stat-label">AI Queries</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">✍️</div>
+        <div class="stat-value" id="reflection-count">0</div>
+        <div class="stat-label">Reflections</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">⏱️</div>
+        <div class="stat-value" id="session-time">0m</div>
+        <div class="stat-label">Session Time</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📊</div>
+        <div class="stat-value" id="avg-words">0</div>
+        <div class="stat-label">Avg Words</div>
+      </div>
+    </div>
+
+    <div class="quality-score">
+      <div class="quality-text">
+        <span class="quality-label">Reflection Quality</span>
+        <span class="quality-percentage" id="quality-percentage">0%</span>
+      </div>
+      <div class="quality-bar">
+        <div class="quality-fill" id="quality-fill" style="width: 0%"></div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="export-data" class="primary-btn">
+        <span class="btn-icon">📊</span>
+        <span>Export Data</span>
+      </button>
+      <button id="toggle-extension" class="secondary-btn">
+        <span class="btn-icon">⏸️</span>
+        <span id="toggle-text">Pause Extension</span>
+      </button>
+      <button id="reset-stats" class="danger-btn">
+        <span class="btn-icon">🔄</span>
+        <span>Reset Stats</span>
+      </button>
+      <button id="open-guide" class="secondary-btn" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none;">
+        <span class="btn-icon">📚</span>
+        <span>User Guide</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="status" class="status active">
+    <span class="status-dot"></span>
+    <span id="status-text">Extension Active</span>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
